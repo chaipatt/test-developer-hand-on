@@ -139,7 +139,7 @@ sequenceDiagram
         A->>KC: get_ticker + get_books
         KC->>BK: GET /api/market/ticker, /api/market/books
     end
-    Note over A: Decimal math → last, chg%, vol, bid/ask,\nspread%, arbitrage% (per pair; error row on failure)
+    Note over A: Decimal math per pair then arbitrage spread. Error row when a side fails.
     A-->>BFF: 200 ExchangeCompareResponse
     BFF-->>W: JSON (zod-validated) → 3 tables
 ```
