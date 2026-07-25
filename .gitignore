@@ -1,0 +1,50 @@
+# ---- Python / uv / Polylith ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.uv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ---- Node / Next.js ----
+node_modules/
+.pnpm-store/
+web/.next/
+web/out/
+web/build/
+next-env.d.ts
+*.tsbuildinfo
+
+# ---- Env / secrets (never commit real values) ----
+.env
+.env.*
+!.env.example
+*.local
+
+# ---- Editor / OS ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- Internal handoff doc (not for the public repo) ----
+# PLAN.md is the internal build contract; it references internal hosts/repos.
+PLAN.md
+
+# ---- Private grading harness (never ship to candidates) ----
+# poison-tester/ holds exploit/presence tests for the deliberately planted
+# issues. It reveals the answers, so it must stay out of the public repo.
+poison-tester/

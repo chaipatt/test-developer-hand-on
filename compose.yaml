@@ -1,0 +1,86 @@
+# One-command local stack: Postgres -> migrate (golang-migrate) -> API -> web.
+# `docker compose up --build` brings the whole thing up. This is the only
+# orchestration in the repo (k8s/Minikube is intentionally out of scope).
+#
+# All values here are LOCAL-ONLY and NON-SECRET (this repo is public).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: liqflow
+      POSTGRES_PASSWORD: liqflow
+      POSTGRES_DB: liqflow
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U liqflow -d liqflow"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # Applies db/*.up.sql in order, then exits. Re-running is a no-op.
+  migrate:
+    image: migrate/migrate:v4.18.1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./db:/migrations:ro
+    # search_path=public pins golang-migrate's schema_migrations table to the
+    # public schema. Without it, the default search_path ("$user",public)
+    # resolves to the liqflow schema (same name as the DB user) once it exists,
+    # so re-runs would create a fresh migrations table and re-apply everything.
+    command:
+      [
+        "-path", "/migrations",
+        "-database", "postgres://liqflow:liqflow@postgres:5432/liqflow?sslmode=disable&search_path=public",
+        "up",
+      ]
+
+  api:
+    build:
+      context: ./api
+      dockerfile: projects/liqflow_api/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      LIQFLOW_API_POSTGRES_DSN: postgresql://liqflow:liqflow@postgres:5432/liqflow
+      LIQFLOW_API_BINANCE_BASE_URL: https://api.binance.th
+      LIQFLOW_API_POLL_INTERVAL_SECONDS: "5"
+      LIQFLOW_API_SYMBOLS: '["USDTTHB"]'
+      LIQFLOW_API_JWT_SECRET: local-demo-secret-not-for-production
+    ports:
+      - "${API_PORT:-8000}:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  web:
+    build:
+      context: ./web
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      # Server-side base URL the BFF + middleware use to reach the Python API.
+      BACKEND_API_BASE_URL: http://api:8000
+      NODE_ENV: production
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+
+volumes:
+  pgdata:

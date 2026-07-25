@@ -1,0 +1,19 @@
+# Optional developer task runner (mise). Not required to run the stack —
+# `docker compose up` is the one-command path. These are conveniences for
+# working on the Python service locally.
+
+[tools]
+python = "3.13"
+uv = "latest"
+
+[tasks."api:test"]
+description = "Run the Python unit tests"
+run = "uv run pytest"
+
+[tasks."api:lint"]
+description = "Lint + format-check the Python service"
+run = "uv run ruff check . && uv run ruff format --check ."
+
+[tasks."api:run"]
+description = "Run the API locally (needs Postgres + migrations applied)"
+run = "uv run liqflow-api"

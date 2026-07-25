@@ -1,0 +1,11 @@
+[tool.polylith]
+namespace = "lf_tool"
+
+[tool.polylith.structure]
+theme = "loose"
+
+[tool.polylith.resources]
+brick_docs_enabled = false
+
+[tool.polylith.test]
+enabled = true

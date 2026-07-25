@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Intentionally colorless / structural. This is a wireframe to demonstrate the
+   data flow, not a design task. */
+body {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  margin: 0;
+  padding: 1.5rem;
+  line-height: 1.5;
+}
