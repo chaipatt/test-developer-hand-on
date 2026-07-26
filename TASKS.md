@@ -10,6 +10,13 @@ anyway. We're happy to answer questions about the test.
 - What are you doing / will you do next?
 - Any blockers?
 
+> **Answer**
+> - **Last period:** developed a custom trading journal dashboard, and researched
+>   and implemented performance improvements for trading bots.
+> - **Next:** focusing on securing a Python backend role while actively trading
+>   and exploring trading opportunities.
+> - **Blockers:** none.
+
 ## The system
 
 ```
@@ -19,11 +26,12 @@ Binance TH order book → API → Postgres DB → API → BFF → Basic Frontend
 This repo is a runnable baseline of exactly that. Get it up first.
 
 ### Checklist
-- [ ] Run Next.js locally
-- [ ] Run the Python API locally
-- [ ] Run Postgres locally
-- [ ] Run the database seeding (migrations)
-- [ ] Submit your finished work to run as a microservice, to GitHub as a public repo
+- [x] Run Next.js locally
+- [x] Run the Python API locally
+- [x] Run Postgres locally
+- [x] Run the database seeding (migrations)
+- [x] Submit your finished work to run as a microservice, to GitHub as a public repo
+      (`github.com/chaipatt/test-developer-hand-on` — confirm the repo is public)
 - [ ] Prepare for the live demo and review — **we will go deep**
 
 See [`README.md`](README.md) for how to run everything (`docker compose up`).
@@ -69,6 +77,44 @@ See [`README.md`](README.md) for how to run everything (`docker compose up`).
 - List optimization ideas for this system (we'll ask you to defend one or two —
   please don't paste an AI essay).
 
+> ### Answers
+> - **The highest transaction volume of a system/DB you've worked on or maintained?**
+>   - Mainly handled create/read/write/delete operations rather than full system maintenance. Estimated order/trade volume is relatively low, around 100–200 transactions per minute.
+>
+> - **Comment on and analyze the system you just finished.**
+>   - **Overview:** Added a 24-hour market stats feed from Binance TH, integrated end-to-end from the backend to a real-time frontend widget.
+>   - **Key Analysis:**
+>     - **Latest-only Storage:** Overwrites old data to keep only the latest stats per symbol. Fast and lightweight, but lacks historical data for charting.
+>     - **Live Cross-Exchange:** Built an admin feature comparing Binance TH and Bitkub prices in real-time for arbitrage, bypassing the DB.
+>     - **Reliability:** Fixed a bid/ask swap bug and added HTTP timeouts to prevent the system from hanging if external APIs fail.
+>
+> - **List optimization ideas for this system.**
+>   - 1. **Implement WebSockets for real-time data streaming.** 
+>   - 2. **Enhance frontend UX.**
+>     - Display the spread (ask matching bid) with the last price in the center.
+>     - Add recent trade history features.
+>   - 3. **Introduce relational tables for symbols and exchanges to facilitate cross-price comparisons.**
+
+### Status — Backend Developer (audit 2026-07-26)
+
+Done:
+- [x] More Binance TH public API — `GET /api/v1/ticker/24hr` added in
+      `api/components/lf_tool/binance_client/core.py` (`get_ticker_24hr`),
+      polled by `orderbook_poller`.
+- [x] Migration — `db/000004_market_stats.{up,down}.sql`.
+- [x] Before/after migration report — `tools/migration-report/main.go` via
+      `github.com/golang-migrate/migrate/v4/database/postgres`; write-up in
+      `docs/migration-report.md`.
+- [x] Frontend surfacing — `web/src/features/orderbook/components/market-stats.tsx`,
+      API `/market-stats/{symbol}` + BFF route.
+- [x] Tests — pytest (`api/test/`), vitest BFF route tests, Playwright smoke.
+- [x] (Bonus) Automated tests — `.forgejo/workflows/ci.yml`, incl. a
+      `db-integration` job that migrates real Postgres and runs the report.
+- [x] (Bonus) Play with the new API — `api/scripts/play_ticker.py`.
+- [x] (Bonus) Craftsmanship — second exchange client (`bitkub_client`) +
+      admin cross-exchange compare feature.
+- [x] (Bonus) UML — `docs/design.md` (component, sequence, ER).
+
 ---
 
 ## Full Stack Developer
@@ -110,6 +156,31 @@ See [`README.md`](README.md) for how to run everything (`docker compose up`).
 - Any competitive programming background?
 - Tell us about your AI skills.
 - Share your 16personalities result.
+
+> ### Answers
+>
+> - **FinTech, exchanges, crypto, banking.**
+>   - I build trading systems and API integrations against crypto exchanges — Binance,
+>     Deribit, Bybit, Binance TH and Bitkub — and against the Thai stock market (SET,
+>     via the Settrade SDK), including Sector Rotation momentum strategies. 
+> 
+> - **Quant trading and HFT.**
+>   - Algorithmic strategies: Rebalancing, Inverse Contract Rebalancing, Grid Trading.
+>   - Arbitrage: exchange (cross-venue), triangular, and cash-and-carry. 
+> 
+> - **Under pressure (tight deadline, 100%-uptime SLA).**
+>   - Stay calm, prioritize tasks systematically, and tackle problems step-by-step to meet tight deadlines and high-uptime SLAs.
+> 
+> - **Autonomy score: 7.**
+>   - Capable of end-to-end ownership (from research to deployment), while remaining open to refining workflows to match global standards.
+> 
+> - **Competitive programming.** 
+>   - No direct competitive programming background.
+> 
+> - **AI skills.**
+>   - Utilize AI tools and subagents with standardized company configurations. Focused on workflow customization and token-efficient practices (such as optimizing with compact tooling).
+> 
+> - **16Personalities: INTJ.**
 
 ---
 
