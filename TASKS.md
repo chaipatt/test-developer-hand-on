@@ -71,6 +71,24 @@ See [`README.md`](README.md) for how to run everything (`docker compose up`).
 - (Bonus/require for senior level): show software craftsmanship or your quant-trade skill.
 - (Bonus/require for senior level): a UML of your choice explaining the system design and data.
 
+Done:
+- [x] More Binance TH public API — `GET /api/v1/ticker/24hr` added in
+      `api/components/lf_tool/binance_client/core.py` (`get_ticker_24hr`),
+      polled by `orderbook_poller`.
+- [x] Migration — `db/000004_market_stats.{up,down}.sql`.
+- [x] Before/after migration report — `tools/migration-report/main.go` via
+      `github.com/golang-migrate/migrate/v4/database/postgres`; write-up in
+      `docs/migration-report.md`.
+- [x] Frontend surfacing — `web/src/features/orderbook/components/market-stats.tsx`,
+      API `/market-stats/{symbol}` + BFF route.
+- [x] Tests — pytest (`api/test/`), vitest BFF route tests, Playwright smoke.
+- [x] (Bonus) Automated tests — `.forgejo/workflows/ci.yml`, incl. a
+      `db-integration` job that migrates real Postgres and runs the report.
+- [x] (Bonus) Play with the new API — `api/scripts/play_ticker.py`.
+- [x] (Bonus) Craftsmanship — second exchange client (`bitkub_client`) +
+      admin cross-exchange compare feature.
+- [x] (Bonus) UML — `docs/design.md` (component, sequence, ER).
+
 **Q&A**
 - The highest transaction volume of a system/DB you've worked on or maintained?
 - Comment on and analyze the system you just finished.
@@ -96,24 +114,6 @@ See [`README.md`](README.md) for how to run everything (`docker compose up`).
 >   - 3. **Introduce relational tables for symbols and exchanges to facilitate cross-price comparisons.**
 
 ### Status — Backend Developer (audit 2026-07-26)
-
-Done:
-- [x] More Binance TH public API — `GET /api/v1/ticker/24hr` added in
-      `api/components/lf_tool/binance_client/core.py` (`get_ticker_24hr`),
-      polled by `orderbook_poller`.
-- [x] Migration — `db/000004_market_stats.{up,down}.sql`.
-- [x] Before/after migration report — `tools/migration-report/main.go` via
-      `github.com/golang-migrate/migrate/v4/database/postgres`; write-up in
-      `docs/migration-report.md`.
-- [x] Frontend surfacing — `web/src/features/orderbook/components/market-stats.tsx`,
-      API `/market-stats/{symbol}` + BFF route.
-- [x] Tests — pytest (`api/test/`), vitest BFF route tests, Playwright smoke.
-- [x] (Bonus) Automated tests — `.forgejo/workflows/ci.yml`, incl. a
-      `db-integration` job that migrates real Postgres and runs the report.
-- [x] (Bonus) Play with the new API — `api/scripts/play_ticker.py`.
-- [x] (Bonus) Craftsmanship — second exchange client (`bitkub_client`) +
-      admin cross-exchange compare feature.
-- [x] (Bonus) UML — `docs/design.md` (component, sequence, ER).
 
 ---
 
